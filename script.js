@@ -103,7 +103,7 @@ $(document).ready(function(){
 	// I store this function as a variable, so that I can later end it
 	var renderBallMovement = setInterval(function(){ renderFrame() }, milliFramerate);
 
-	// This function will run after 10000ms, or, 10 seconds
+	// This function will cease to run after 10000ms, or, 10 seconds
 	setTimeout(function(){
 		clearInterval(renderBallMovement);
 	}, 10000);
