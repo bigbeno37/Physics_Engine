@@ -1,4 +1,4 @@
-var heightOfBall = 850;
+var heightOfBall = 300;
 var angleOfBall = 45;
 // Javascript requires degrees to be turned into radians to be able to compute them, so I just convert it once and use this instead
 var angleOfBallRadians = convertToRadians(angleOfBall);
@@ -9,7 +9,7 @@ var velocityY = velocity * Math.sin(angleOfBallRadians);
 var gravity = 9.8;
 // I made it so that the custom coded renderer can utilise multiple framerates
 var framerate = 60;
-// Due to a function requiring a millisecond time, I convert the amount of frames per second to millisecond per frame
+// Due to a function requiring a millisecond time, I convert the amount of frames per second to milliseconds per frame
 var milliFramerate = 1000 / framerate;
 
 var currentTime = 0;
@@ -17,9 +17,10 @@ var currentPositionX = 0;
 var currentPositionY = heightOfBall;
 
 var ballIsDrawn = false;
+var ballHasReachedZero = false;
 
-var sizeOfCanvasX = 700;
-var sizeOfCanvasY = 900;
+var sizeOfCanvasX = 1200;
+var sizeOfCanvasY = 500;
 
 var ball;
 var canvas;
@@ -47,6 +48,16 @@ function convertToRadians(degrees){
 
 function convertToSeconds(milliTime){
 	return milliTime*0.001;
+}
+
+function resetValues(){
+	heightOfBall = 5;
+	velocity /= 0.5;
+	currentTime = 0;
+
+	currentPositionY = heightOfBall;
+
+	ballHasReachedZero = false;
 }
 
 function determineX(){
@@ -77,8 +88,12 @@ function renderFrame(){
 	if(!ballIsDrawn){
 		drawBall();
 	}else{
-		ball.set({top: topValue, left: leftValue});
-		canvas.renderAll();
+		if(!ballHasReachedZero){
+			ball.set({top: topValue, left: leftValue});
+			canvas.renderAll();
+		}else{
+			resetValues();
+		}
 	}
 
 	currentPositionY = determineY(time);
@@ -87,6 +102,14 @@ function renderFrame(){
 	// These spurt out constant information that I can use to debug
 	console.log("Current time is " + currentTime + "ms, " + time + "s");
 	console.log("Top is: " + topValue + " and left is: " + leftValue);
+
+	if(topValue >= sizeOfCanvasY && !ballHasReachedZero){
+		console.log("")
+		console.log(" -------------------- Ball has reached y=0 -------------------------");
+		console.log("")
+
+		ballHasReachedZero = true;
+	}
 }
 
 $(document).ready(function(){
